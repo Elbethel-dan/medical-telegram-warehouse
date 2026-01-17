@@ -9,7 +9,7 @@ logs
 week8
 
 
-_pycache__
+__pycache__
 
 
 telegram_scraper_session.session
