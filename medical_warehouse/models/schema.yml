@@ -1,0 +1,173 @@
+version: 2
+
+# =======================
+# Sources
+# =======================
+sources:
+  - name: raw
+    description: "Raw tables from Telegram scraping"
+    tables:
+      - name: telegram_messages
+        description: "Raw JSON messages loaded from Telegram"
+
+
+# =======================
+# Models
+# =======================
+models:
+
+  # -----------------------
+  # Staging Models
+  # -----------------------
+  - name: stg_telegram_messages
+    description: "Staging table for Telegram messages. Cleans and flattens raw JSON."
+    columns:
+      - name: id
+        description: "Unique identifier for each message"
+        tests:
+          - unique
+          - not_null
+
+      - name: sender
+        description: "Telegram channel that sent the message"
+        tests:
+          - not_null
+
+      - name: message_text
+        description: "Flattened text of the message"
+        tests:
+          - not_null
+
+      - name: message_length
+        description: "Length of the message text"
+
+      - name: message_date
+        description: "Date of the message"
+        tests:
+          - not_null
+
+      - name: has_media
+        description: "Flag indicating if the message contains media"
+
+
+  # -----------------------
+  # Dimension Models
+  # -----------------------
+  - name: dim_channels
+    description: "Dimension table containing Telegram channel information"
+    columns:
+      - name: channel_key
+        description: "Surrogate key for channel"
+        tests:
+          - unique
+          - not_null
+
+      - name: channel_name
+        description: "Name of the Telegram channel"
+        tests:
+          - not_null
+
+      - name: channel_type
+        description: "Channel type (Pharmaceutical, Cosmetics, Medical)"
+
+      - name: first_post_date
+        description: "Date of first message from this channel"
+
+      - name: last_post_date
+        description: "Date of last message from this channel"
+
+      - name: total_posts
+        description: "Total number of messages sent by the channel"
+
+      - name: avg_views
+        description: "Average views per message (if available)"
+
+
+  - name: dim_dates
+    description: "Date dimension for time-based analysis"
+    columns:
+      - name: date_key
+        description: "Surrogate key for date"
+        tests:
+          - unique
+          - not_null
+
+      - name: full_date
+        description: "Actual date"
+        tests:
+          - not_null
+
+      - name: day_of_week
+        description: "Day of the week (0=Sunday)"
+
+      - name: day_name
+        description: "Name of the day (Sunday, Monday, etc.)"
+
+      - name: week_of_year
+        description: "Week number of the year"
+
+      - name: month
+        description: "Month number"
+
+      - name: month_name
+        description: "Month name"
+
+      - name: quarter
+        description: "Quarter of the year"
+
+      - name: year
+        description: "Year"
+
+      - name: is_weekend
+        description: "Flag if the day is Saturday or Sunday"
+
+
+  # -----------------------
+  # Fact Models
+  # -----------------------
+  - name: fct_messages
+    description: "Fact table containing Telegram messages"
+    columns:
+      - name: message_id
+        description: "Primary key for message"
+        tests:
+          - unique
+          - not_null
+
+      - name: channel_key
+        description: "Foreign key to dim_channels"
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_channels')
+                field: channel_key
+
+      - name: date_key
+        description: "Foreign key to dim_dates"
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_dates')
+                field: date_key
+
+      - name: message_text
+        description: "Message text"
+        tests:
+          - not_null
+
+      - name: message_length
+        description: "Length of message text"
+
+      - name: view_count
+        description: "Number of views per message"
+        tests:
+          - not_null
+         
+
+      - name: forward_count
+        description: "Number of forwards per message (if available)"
+
+      - name: has_image
+        description: "Flag indicating if the message contains media"
