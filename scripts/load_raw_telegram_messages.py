@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 # Load environment variables from .env
 load_dotenv()
 
-# Path to your raw JSON files
 DATA_LAKE_PATH = "/Users/elbethelzewdie/Downloads/medical-telegram-warehouse/medical-telegram-warehouse/data/raw/telegram_messages/2026-01-17"
 
 # Connect to PostgreSQL
@@ -22,40 +21,55 @@ conn = psycopg2.connect(
 
 cursor = conn.cursor()
 
-# SQL query to insert a JSON message
 INSERT_QUERY = """
-INSERT INTO raw.telegram_messages (source_file, message)
-VALUES (%s, %s)
+INSERT INTO raw.telegram_messages (
+    id, channel_name, channel_title, message_text, message_date, views, forwards, has_media, image_path
+) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+ON CONFLICT (id) DO NOTHING
 """
 
 def load_json_file(file_path: Path):
-    """
-    Load a single JSON file and insert its content into the database.
-    Supports both single JSON object or list of objects.
-    """
     with open(file_path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
     if isinstance(data, list):
         for msg in data:
-            cursor.execute(INSERT_QUERY, (file_path.name, Json(msg)))
+            cursor.execute(INSERT_QUERY, (
+                msg.get("message_id"),
+                msg.get("channel_name"),
+                msg.get("channel_title"),
+                msg.get("message_text"),
+                msg.get("message_date"),
+                msg.get("views"),
+                msg.get("forwards"),
+                msg.get("has_media"),
+                msg.get("image_path")
+            ))
     else:
-        cursor.execute(INSERT_QUERY, (file_path.name, Json(data)))
+        msg = data
+        cursor.execute(INSERT_QUERY, (
+            msg.get("message_id"),
+            msg.get("channel_name"),
+            msg.get("channel_title"),
+            msg.get("message_text"),
+            msg.get("message_date"),
+            msg.get("views"),
+            msg.get("forwards"),
+            msg.get("has_media"),
+            msg.get("image_path")
+        ))
 
 def main():
-    # Find all JSON files recursively
     json_files = Path(DATA_LAKE_PATH).rglob("*.json")
-
     count = 0
     for file_path in json_files:
         if file_path.name.lower() == "_manifest.json":
-            continue  # skip manifest
+            continue
         try:
             load_json_file(file_path)
             count += 1
         except Exception as e:
             print(f"❌ Failed to load {file_path}: {e}")
-    # Commit all inserts
     conn.commit()
     print(f"✅ Loaded data from {count} JSON files into raw.telegram_messages")
 
