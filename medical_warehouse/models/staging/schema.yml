@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: raw           # schema name in PostgreSQL
+    database: telegram_db  # optional if same DB as target
+    schema: raw
+    tables:
+      - name: telegram_messages
