@@ -23,9 +23,9 @@ cursor = conn.cursor()
 
 INSERT_QUERY = """
 INSERT INTO raw.telegram_messages (
-    id, channel_name, channel_title, message_text, message_date, views, forwards, has_media, image_path
+    message_id, channel_name, channel_title, message_text, message_date, views, forwards, has_media, image_path
 ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-ON CONFLICT (id) DO NOTHING
+ON CONFLICT (message_id) DO NOTHING
 """
 
 def load_json_file(file_path: Path):
