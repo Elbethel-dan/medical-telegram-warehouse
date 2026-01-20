@@ -1,0 +1,95 @@
+version: 2
+
+models:
+
+  - name: dim_channels
+    description: "Information about each Telegram channel"
+    columns:
+      - name: channel_key
+        description: "Surrogate key for the channel"
+        tests:
+          - unique
+          - not_null
+      - name: channel_name
+        tests:
+          - not_null
+
+  - name: dim_dates
+    description: "Date dimension for time-based analysis"
+    columns:
+      - name: date_key
+        tests:
+          - unique
+          - not_null
+      - name: full_date
+        tests:
+          - not_null
+
+  - name: fct_messages
+    description: "Fact table of messages from Telegram channels"
+    columns:
+      - name: message_id
+        tests:
+          - unique
+          - not_null
+      - name: channel_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_channels')
+              field: channel_key
+      - name: date_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_dates')
+              field: date_key
+      - name: message_text
+        tests:
+          - not_null
+      - name: view_count
+        tests:
+          - not_null
+      - name: forward_count
+        tests:
+          - not_null
+  - name: fct_image_detections
+    description: "Fact table integrating YOLO image detections with message and channel info."
+    columns:
+      - name: message_id
+        description: "Unique identifier for the message."
+        tests:
+          - unique
+          - not_null
+
+      - name: channel_key
+        description: "Foreign key to dim_channels."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_channels')
+              field: channel_key
+
+      - name: date_key
+        description: "Foreign key to dim_dates."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_dates')
+              field: date_key
+
+      - name: detected_class
+        description: "Detected object class label from YOLO."
+        tests:
+          - not_null
+
+      - name: confidence_score
+        description: "Confidence score for detected object."
+        tests:
+          - not_null
+
+      - name: image_category
+        description: "Image classification category (promotional, product_display, lifestyle, other)."
+        tests:
+          - not_null
+
