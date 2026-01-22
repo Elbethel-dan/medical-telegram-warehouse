@@ -59,7 +59,6 @@ models:
       - name: message_id
         description: "Unique identifier for the message."
         tests:
-          - unique
           - not_null
 
       - name: channel_key

@@ -1,15 +1,20 @@
 
-  create view "telegram_db"."raw"."fct_image_detections__dbt_tmp"
+  
     
-    
-  as (
+
+  create  table "telegram_db"."raw"."fct_image_detections__dbt_tmp"
+  
+  
+    as
+  
+  (
     with yolo as (
     select
         message_id,
         detected_class,
         confidence_score,
         image_category
-    from "telegram_db"."raw"."stg_yolo_detections"  -- use ref instead of source here
+    from "telegram_db"."raw"."stg_yolo_detections"
 ),
 
 messages as (
@@ -28,6 +33,7 @@ select
     y.confidence_score,
     y.image_category
 from messages m
-left join yolo y
+join yolo y
     on m.message_id = y.message_id
   );
+  

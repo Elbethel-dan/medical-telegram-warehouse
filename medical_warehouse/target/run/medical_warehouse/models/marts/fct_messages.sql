@@ -1,8 +1,13 @@
 
-  create view "telegram_db"."raw"."fct_messages__dbt_tmp"
+  
     
-    
-  as (
+
+  create  table "telegram_db"."raw"."fct_messages__dbt_tmp"
+  
+  
+    as
+  
+  (
     -- models/marts/fct_messages.sql
 select
     s.message_id,
@@ -19,3 +24,4 @@ left join "telegram_db"."raw"."dim_channels" c
 left join "telegram_db"."raw"."dim_dates" d
     on s.message_date::date = d.full_date
   );
+  

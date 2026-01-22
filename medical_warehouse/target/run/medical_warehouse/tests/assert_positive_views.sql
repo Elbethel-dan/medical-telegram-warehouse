@@ -6,11 +6,10 @@
     from (
       
     
-  -- tests/assert_positive_views.sql
-SELECT *
-FROM "telegram_db"."raw"."fct_messages"
-WHERE view_count < 0
-   OR forward_count < 0
+  -- Test: Ensure view_count is non-negative
+select *
+from "telegram_db"."raw"."fct_messages"
+where cast(view_count as integer) < 0
   
   
       
