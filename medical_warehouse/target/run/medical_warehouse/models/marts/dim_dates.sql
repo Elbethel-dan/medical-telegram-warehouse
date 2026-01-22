@@ -1,8 +1,13 @@
 
-  create view "telegram_db"."raw"."dim_dates__dbt_tmp"
+  
     
-    
-  as (
+
+  create  table "telegram_db"."raw"."dim_dates__dbt_tmp"
+  
+  
+    as
+  
+  (
     -- models/marts/dim_dates.sql
 with dates as (
     select distinct
@@ -24,3 +29,4 @@ select
 from dates
 order by full_date
   );
+  
