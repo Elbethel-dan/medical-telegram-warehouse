@@ -1,96 +1,108 @@
-# Ethiopian Medical Telegram Data Platform
+# Ethiopian Medical Telegram Data Platform 🚀
 
 ## 📌 Project Overview
 
-This project builds an end-to-end ELT data platform to analyze Ethiopian medical businesses using data scraped from public Telegram channels. The system transforms raw Telegram data into a clean, tested, analytics-ready data warehouse, enriched with image-based insights using YOLO object detection.
+This project delivers a comprehensive end-to-end ELT data platform designed to unlock actionable insights from Ethiopian medical businesses by harnessing publicly available data from Telegram channels. It seamlessly transforms raw Telegram messages and images into a clean, analytics-ready data warehouse, enriched with state-of-the-art image recognition powered by YOLOv8.
 
 ---
 
 ## 🏢 Business Goal
 
-Enable data-driven insights such as:
+Empower stakeholders with data-driven insights including:
 
-- Most frequently mentioned medical products
+- 🔍 Most frequently mentioned medical products and brands
 
-- Channel-level activity and posting trends
+- 📊 Channel-level activity and posting trends over time
 
-- Visual content analysis (images with products vs people)
+- 🖼️ Visual content classification to distinguish product displays, promotions, lifestyles, and more
 
-- Daily and weekly message volume trends
+- 📅 Daily and weekly message volume and engagement patterns
 
 ---
-## Tech Stack
+## 🛠️ Tech Stack
 
-- Python (Telethon, Pandas)
+- Python: Telethon for Telegram scraping, Pandas for data wrangling
 
-- PostgreSQL (Data Warehouse)
+- PostgreSQL: Robust data warehousing solution
 
-- dbt (Transformations, testing, documentation)
+- dbt: Data transformation, testing, and documentation
 
-- YOLOv8 (Object detection)
+- YOLOv8: Cutting-edge object detection for image enrichment
 
-- Docker (PostgreSQL environment)
+- FastAPI: High-performance REST API for analytical data access
+
+- Docker: Containerized PostgreSQL and environment reproducibility
+
+- Dagster: Pipeline orchestration and scheduling
   
 ---
 
 ## ✅ Pipeline Summary:
 #### 1. Extract & Load
 
-- Scrape Telegram messages and images
+- Scrape Telegram messages and associated images across targeted medical channels
 
-- Store raw JSON and images in a data lake structure
+- Persist raw JSON data and images in a scalable data lake structure
 
 #### 2. Transform (dbt)
 
-- Clean and standardize data (staging models)
+- Standardize and clean data via staging models
 
-- Build a star schema:
+- Construct a star schema data warehouse with dimensional tables (dim_channels, dim_dates) and fact tables (fct_messages)
 
-  - dim_channels
+- Enforce data quality through schema and custom business tests (e.g., no future-dated messages, non-negative views)
 
-  - dim_dates
+#### 3. Image Enrichment (YOLOv8)
 
-  - fct_messages
+- Detect and classify objects in images to enhance message data
 
-- Enforce data quality with schema and custom tests
+- Categories include: promotional materials, product displays, lifestyle shots, and others
 
-#### 3. Image Enrichment
-
-- Detect objects in images using YOLOv8
-
-- Classify images as:
-
-  - promotional
-
-  - product_display
-
-  - lifestyle
-
-  - other
-
-- Store results in fct_image_detections
+- Store enriched results in the fct_image_detections fact table for integrated analysis
 
 ---
+#### 4. Analytical API (FastAPI)
 
-## Data Quality
+- Serve cleaned and enriched data via a RESTful API
 
-- Primary key and foreign key tests
+- Enable flexible querying for dashboarding, reporting, and advanced analytics
+---
+#### 5. Orchestration (Dagster)
 
-- Custom business rules:
+- Automate the full ELT pipeline with task dependencies and retries
 
-  - No future-dated messages
+- Schedule daily runs to keep data fresh and insights up-to-date
+
+- Monitor pipeline health and logs through Dagster’s UI
   
-  - Non-negative view counts
+---
+## 🔎 Data Quality Highlights
 
-- All tests validated via dbt test
+- Primary and foreign key constraints across tables
+
+- Custom validation rules implemented as dbt tests
+
+- Continuous integration of tests ensures reliability and trustworthiness
 
 ---
-## How to Run
+## 🚀 How to Run
 bash 
 ```
+# Run dbt transformations
 dbt run
+
+# Validate data quality
 dbt test
+
+# Generate and serve documentation
 dbt docs generate
 dbt docs serve
+
+# Start the FastAPI analytics service
+uvicorn src.api:app --reload
+
+# Launch Dagster UI for pipeline orchestration
+dagster dev -f scripts/pipeline.py
+
 ```
 
