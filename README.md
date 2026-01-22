@@ -105,4 +105,8 @@ uvicorn src.api:app --reload
 dagster dev -f scripts/pipeline.py
 
 ```
+---
+## 🎯 Impact
+
+This platform empowers medical businesses and analysts with rich, timely insights — transforming raw Telegram chatter into strategic intelligence that drives smarter decision-making and market understanding across Ethiopia’s healthcare ecosystem.
 
