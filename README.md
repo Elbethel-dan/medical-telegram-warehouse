@@ -1,5 +1,5 @@
 # Ethiopian Medical Telegram Data Platform 🚀
-![Ethiopian Medical Telegram Data Platform](image-project.jpeg)
+![Ethiopian Medical Telegram Data Platform](images/image-project.jpeg)
 
 ## 📌 Project Overview
 
