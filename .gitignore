@@ -13,3 +13,6 @@ __pycache__
 
 
 telegram_scraper_session.session
+
+# Dagster temp storage
+.tmp_dagster_home_*

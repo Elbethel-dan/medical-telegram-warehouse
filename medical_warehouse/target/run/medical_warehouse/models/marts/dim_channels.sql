@@ -1,8 +1,13 @@
 
-  create view "telegram_db"."raw"."dim_channels__dbt_tmp"
+  
     
-    
-  as (
+
+  create  table "telegram_db"."raw"."dim_channels__dbt_tmp"
+  
+  
+    as
+  
+  (
     -- models/marts/dim_channels.sql
 with channel_data as (
     select
@@ -30,3 +35,4 @@ select
     avg_views
 from channel_data
   );
+  
